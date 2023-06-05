@@ -11,17 +11,18 @@ output: html_notebook
 ```{r}
 # Load `tidyverse` and `dcData` packages
 
-
-
+library(tidyverse)
+library(dcData)
 
 # Load the `OrdwayBirds` data set into your RStudio environment from the `dcData` package
 
-
+data(OrdwayBirds)
+data("OrdwaySpeciesNames")
 
 
 # Show a few commands used to inspect the data set a few different ways
-
-
+  summary(OrdwayBirds)
+  head(OrdwayBirds)
 
 ```
 
@@ -36,10 +37,14 @@ Before we begin, the book gives us some instructions to select a few key variabl
 ```{r}
 # Get the data table & clean up dates (see Data Computing eBook)
 
-
-
+OrdwayBirds <-
+  OrdwayBirds %>%
+  select( SpeciesName, Month, Day ) %>%
+  mutate( Month = as.numeric(as.character(Month)), 
+          Day = as.numeric(as.character(Day)))
+  
 # Inspect resulting data
-
+head(OrdwayBirds)
 
 ```
 
@@ -48,15 +53,16 @@ Before we begin, the book gives us some instructions to select a few key variabl
 ### Step 1
 
 
-
-
 ```{r}
 # unique species in original data (including mis-spellings)
-
-
+OrdwayBirds$SpeciesName %>%
+  unique() %>%
+  length()
 
 # unique species in the clean list
-
+OrdwaySpeciesNames$SpeciesNameCleaned %>%
+  unique() %>%
+  length()
 
 
 ```
@@ -64,16 +70,12 @@ Before we begin, the book gives us some instructions to select a few key variabl
 
 ### Step 2
   
-
-
-
+  
 ```{r}
 # inspect OrdwaySpeciesNames
 
 
 # inner join
-
-
 
 
 # inspect the data after the join
@@ -88,7 +90,6 @@ We want to identify the top 5-6 bird species sighted at the Katherine Ordway Nat
 
 ```{r}
 # count sightings by species in descending order
-
 
 
 
