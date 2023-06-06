@@ -40,7 +40,9 @@ Before we begin, the book gives us some instructions to select a few key variabl
 OrdwayBirds <-
   OrdwayBirds %>%
   select( SpeciesName, Month, Day ) %>%
-  mutate()
+  mutate( Month = as.numeric(as.character(Month)), 
+          Day = as.numeric(as.character(Day)))
+
   
 # Inspect resulting data
 head(OrdwayBirds)
@@ -78,7 +80,7 @@ head(OrdwaySpeciesNames, n = 10)
 Corrected <-
   OrdwayBirds %>%
   inner_join( OrdwaySpeciesNames ) %>% 
-  select( Species = SpeciesNameCleaned, Month, Day ) %>%
+  select(Species = SpeciesNameCleaned, Month, Day ) %>%
   na.omit()
 
 # inspect the data after the join
@@ -96,17 +98,26 @@ We want to identify the top 5-6 bird species sighted at the Katherine Ordway Nat
 Corrected %>% 
   group_by(Species) %>%
   summarise(Count = n()) %>%
-  arrange(desc(Count))
+  arrange(desc(Count)) %>%
+  head(n = 6)
 
 # a hint in the text book recommends displaying the top 10 species to choose our threshold
 Corrected %>% 
   group_by(Species) %>%
   summarise(Count = n()) %>%
-  arrange(desc(Count), n = 10)
+  arrange(desc(Count)) %>%
+  head(n = 10)
 
 
 # define a sightings threshold; produce a table with only birds belonging to major species
 
+###the threshold is any species above the count of 800
+
+Corrected %>% 
+  group_by(Species) %>%
+  summarise(Count = n()) %>%
+  arrange(desc(Count)) %>%
+  filter(Count > 800)
 
 
 
@@ -120,8 +131,14 @@ We now want to produce a month-by-month count for each of the major species, and
 ```{r}
 # prepare glyph-ready data table called `ByMonth`
 
-
-
+ByMonth <- 
+  Corrected %>% 
+  group_by(Species, Month) %>%
+  summarise(count = n()) %>%
+  filter(Species%in% c("Slate-colored Junco", "Tree Swallow", "Black-capped Chickadee", "American Goldfinch", "Field Sparrow" ))
+  
+  
+ByMonth
 ```
 
 Now use the ggplot template below to generate the desired graph. (Remark you can also use esquisser or mplot to create a line chart instead of the barchart)
@@ -143,24 +160,21 @@ ByMonth %>% ggplot(aes(x=Month,y=count ,fill=Species)) +
 According to the graph, we can answer the questions posed:
 
 ##### 1. Which species are present year-round?  
-
+American Goldfinch, Black-capped Chickadee, Tree-Wallow
 
 
 ##### 2. Which species are migratory, that is, primarily present in one or two seasons?
-
-
+Field Sparrow and State-Colored Junco
 
 
 ##### 3. What is the peak month for each major species? (bullet list)
-
-
+* American Goldfinch: October
+* Black-capped Chickadee: November
+* Field Sparrow: May 
+* Slate-colored Junco: October
+* Tree Swallow: March
 
 
 ##### 4. Which major species are seen in good numbers for at least 6 months of the year?
-
-
-
-```{r}
-
-```
+Three species appear in consistent, good numbers: Field Sparrow, Tree swallow, and Black-Capped Chickadee. 
 
