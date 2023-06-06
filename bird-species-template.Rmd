@@ -1,7 +1,7 @@
 ---
 title: "Activity: Bird Species"
-author: "Your Names Here"
-date: "DUE DATE "
+author: "Daniel Gao"
+date: "June 7, 2023 "
 output: html_notebook
 ---
 
@@ -40,8 +40,7 @@ Before we begin, the book gives us some instructions to select a few key variabl
 OrdwayBirds <-
   OrdwayBirds %>%
   select( SpeciesName, Month, Day ) %>%
-  mutate( Month = as.numeric(as.character(Month)), 
-          Day = as.numeric(as.character(Day)))
+  mutate()
   
 # Inspect resulting data
 head(OrdwayBirds)
@@ -73,13 +72,17 @@ OrdwaySpeciesNames$SpeciesNameCleaned %>%
   
 ```{r}
 # inspect OrdwaySpeciesNames
+head(OrdwaySpeciesNames, n = 10)
 
-
-# inner join
-
+# inner join 
+Corrected <-
+  OrdwayBirds %>%
+  inner_join( OrdwaySpeciesNames ) %>% 
+  select( Species = SpeciesNameCleaned, Month, Day ) %>%
+  na.omit()
 
 # inspect the data after the join
-
+head(Corrected)
 
 ```
 
@@ -90,11 +93,16 @@ We want to identify the top 5-6 bird species sighted at the Katherine Ordway Nat
 
 ```{r}
 # count sightings by species in descending order
-
-
+Corrected %>% 
+  group_by(Species) %>%
+  summarise(Count = n()) %>%
+  arrange(desc(Count))
 
 # a hint in the text book recommends displaying the top 10 species to choose our threshold
-
+Corrected %>% 
+  group_by(Species) %>%
+  summarise(Count = n()) %>%
+  arrange(desc(Count), n = 10)
 
 
 # define a sightings threshold; produce a table with only birds belonging to major species
